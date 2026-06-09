@@ -1,0 +1,39 @@
+// This is the Jenkinsfile for the "rollback-to-stable" job.
+// Save this file as Jenkinsfile.rollback in your repo root,
+// then point the Jenkins job to this file path.
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Switch Traffic to Stable (Green)') {
+            steps {
+                sh '''
+                    echo "=== SELF-HEALING: Switching traffic to stable green slot ==="
+
+                    # Patch the service selector to point to green (stable) pods
+                    kubectl patch service sentiment-api-service \
+                        -p "{\\"spec\\":{\\"selector\\":{\\"slot\\":\\"green\\"}}}"
+
+                    echo "=== Traffic switched to GREEN (stable) slot ==="
+
+                    # Verify the patch worked
+                    kubectl get service sentiment-api-service -o jsonpath="{.spec.selector}"
+                    echo ""
+                    echo "=== Rollback complete ==="
+                '''
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Rollback to stable completed successfully!"
+        }
+        failure {
+            echo "Rollback FAILED — check kubectl access"
+        }
+    }
+}

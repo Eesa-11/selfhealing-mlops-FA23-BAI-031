@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 30s
+  repeat_interval: 5m
+  receiver: 'jenkins-rollback-webhook'
+
+receivers:
+  - name: 'jenkins-rollback-webhook'
+    webhook_configs:
+      - url: 'http://13.63.232.181:8080/generic-webhook-trigger/invoke?token=ROLLBACK_8A6DCA_TOKEN'
+        send_resolved: false
+        http_config:
+          basic_auth:
+            username: 'eesa'
+            password: '11eb22c2940b52829731b4332a83efb2c4'
