@@ -19,13 +19,7 @@ scrape_configs:
   # Scrape our custom ML exporter running on EC2 port 8000
   - job_name: 'sentiment-ml-exporter'
     static_configs:
-      - targets: ['host.docker.internal:8000']
-    # Note: host.docker.internal allows the Prometheus Docker container
-    # to reach the exporter.py process running on EC2 host.
-    # If that doesn't work on your EC2, replace with your EC2 private IP:
-    # - targets: ['172.31.x.x:8000']
-
-  # Optional: scrape Prometheus itself
+      - targets: ['172.31.38.96:8000']
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
